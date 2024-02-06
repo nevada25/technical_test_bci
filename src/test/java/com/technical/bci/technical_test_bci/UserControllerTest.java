@@ -3,14 +3,19 @@ package com.technical.bci.technical_test_bci;
 import com.technical.bci.technical_test_bci.clients.config.JwtUtil;
 import com.technical.bci.technical_test_bci.controllers.UserController;
 import com.technical.bci.technical_test_bci.exceptions.EmailAlreadyExistsException;
+import com.technical.bci.technical_test_bci.models.Phone;
 import com.technical.bci.technical_test_bci.models.User;
 import com.technical.bci.technical_test_bci.services.UserService;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -30,34 +35,32 @@ public class UserControllerTest {
     }
 
     @Test
-    void testRegisterUserSuccess() throws EmailAlreadyExistsException {
-        // Simula un usuario registrado exitosamente
+    void testRegisterUserSuccess()  {
         User mockUser = new User();
+        mockUser.setId(Long.parseLong("1"));
+        mockUser.setEmail("calderon200396@gmail.com");
+        mockUser.setPassword("Kevin12");
+        List<Phone> phones=new ArrayList<>();
+        Phone mockPhone=new Phone();
+        mockPhone.setId(Long.parseLong("1"));
+        mockPhone.setNumber("935280674");
+        mockPhone.setCitycode("Tarapoto");
+        mockPhone.setCountrycode("San Martin");
+        phones.add(mockPhone);
+        mockUser.setPhones(phones);
+
         when(userService.registerUser(any())).thenReturn(mockUser);
-
-        // Ejecuta la prueba
         ResponseEntity<?> response = userController.registerUser(new User());
-
-        // Verifica que la respuesta tenga el código 201 (Created)
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        // Verifica que el token y otros campos se hayan agregado correctamente al usuario
-        // Puedes agregar más verificaciones según tus necesidades específicas
     }
 
     @Test
-    void testRegisterUserEmailAlreadyExists() throws EmailAlreadyExistsException {
-        // Simula el caso en que el correo ya existe
-        when(userService.registerUser(any())).thenThrow(new EmailAlreadyExistsException());
-
+    void testRegisterUserEmailAlreadyExists() {
+        when(userService.registerUser(any())).thenThrow(ConstraintViolationException.class);
         // Ejecuta la prueba
         ResponseEntity<?> response = userController.registerUser(new User());
-
-        // Verifica que la respuesta tenga el código 400 (Bad Request)
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        // Verifica que el mensaje de error sea el esperado
-        // Puedes agregar más verificaciones según tus necesidades específicas
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatusCode());
     }
 
-    // Agrega más pruebas según sea necesario para cubrir otros casos
 
 }

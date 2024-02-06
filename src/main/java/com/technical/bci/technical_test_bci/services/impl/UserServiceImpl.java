@@ -22,15 +22,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User registerUser(User user) throws EmailAlreadyExistsException {
-        // Verificar si el correo ya está registrado
-        if (userRepository.findByEmail(user.getEmail()) != null) {
-            throw new EmailAlreadyExistsException();
-        }
-
-        // Puedes agregar lógica adicional de validación antes de guardar el usuario en la base de datos
-
-        // Guardar el usuario
+    public User registerUser(User user)  {
         String token = jwtUtil.create(user.getEmail());
         user.setToken(token);
         user.setActive(true);

@@ -22,6 +22,7 @@ public class User {
     private String name;
 
     @Email(message = "Formato de correo incorrecto")
+    @Column(unique = true)
     private String email;
 
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d{2}).+$", message = "Formato de contraseña incorrecto: intente con este formato => Una Mayuscula, letras minúsculas, y dos numeros")

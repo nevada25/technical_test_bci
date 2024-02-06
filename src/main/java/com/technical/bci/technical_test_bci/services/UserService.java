@@ -6,6 +6,6 @@ import com.technical.bci.technical_test_bci.models.User;
 import java.util.Optional;
 
 public interface UserService {
-    User registerUser(User user) throws EmailAlreadyExistsException;
+    User registerUser(User user) ;
     Optional<User> getUserById(Long userId);
 }
